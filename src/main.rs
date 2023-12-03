@@ -1,3 +1,4 @@
+use std::time::Instant;
 use aoc23::days::{*, common::Solution};
 use clap::Parser;
 
@@ -5,21 +6,27 @@ use clap::Parser;
 struct Cli {
     day: i8,
     input_file: String,
+    part: Option<u8>,
 }
 
-fn get_day(day: i8) -> impl Solution {
+fn get_day(day: i8) -> Box<dyn Solution<ParsedInput=String, Part1Output=i32, Part2Output=i32>> {
     match day {
-        1 => day01::Day01::new(),
+        1 => Box::new(day01::Day01::new()),
+        2 => Box::new(day02::Day02::new()),
+        3 => Box::new(day03::Day03::new()),
         _ => unimplemented!()
     }
 }
 
-
 fn main() {
 
     let cli = Cli::parse();
-    let d =get_day(cli.day);
-    match d.run(cli.input_file) {
+    let d = get_day(cli.day);
+    let start_time = Instant::now();
+    let res = d.run(cli.input_file, cli.part);
+    let elapsed = start_time.elapsed();
+    println!("Elapsed: {:.2?}", elapsed);
+    match res {
         Err(e) => println!("Error parsing file: {}", e),
         Ok((r1, r2)) => {
             if let Ok(r) = r1 {
