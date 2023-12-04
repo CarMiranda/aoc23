@@ -14,6 +14,7 @@ fn get_day(day: i8) -> Box<dyn Solution<ParsedInput=String, Part1Output=i32, Par
         1 => Box::new(day01::Day01::new()),
         2 => Box::new(day02::Day02::new()),
         3 => Box::new(day03::Day03::new()),
+        4 => Box::new(day04::Day04::new()),
         _ => unimplemented!()
     }
 }
