@@ -10,21 +10,21 @@ impl Day06 {
 
 fn parse(input: &String) -> () {
    let times: Vec<u64> = input
-       .split("\n")
+       .lines()
        .nth(0).unwrap()
        .split(":")
        .nth(1).unwrap()
-       .trim()
        .split(" ")
+       .filter(|x| !x.is_empty())
        .map(|x| x.parse::<u64>().unwrap())
        .collect(); 
    let records: Vec<u64> = input
-       .split("\n")
+       .lines()
        .nth(1).unwrap()
        .split(":")
        .nth(1).unwrap()
-       .trim()
        .split(" ")
+       .filter(|x| !x.is_empty())
        .map(|x| x.parse::<u64>().unwrap())
        .collect(); 
 
