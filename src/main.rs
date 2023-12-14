@@ -17,10 +17,14 @@ fn get_day(day: i8) -> Box<dyn Solution<ParsedInput=String, Part1Output=i32, Par
         4 => Box::new(day04::Day04::new()),
         5 => Box::new(day05::Day05::new()),
         6 => Box::new(day06::Day06::new()),
+        7 => Box::new(day07::Day07::new()),
         8 => Box::new(day08::Day08::new()),
         9 => Box::new(day09::Day09::new()),
         10 => Box::new(day10::Day10::new()),
         11 => Box::new(day11::Day11::new()),
+        12 => Box::new(day12::Day12::new()),
+        13 => Box::new(day13::Day13::new()),
+        14 => Box::new(day14::Day14::new()),
         _ => unimplemented!()
     }
 }
