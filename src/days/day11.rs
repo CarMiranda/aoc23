@@ -37,8 +37,48 @@ fn parse(input: &String) -> (usize, usize, HashSet<(usize, usize)>, Vec<usize>, 
     (width, height, m, empty_rows, empty_cols)
 }
 
-fn l1_dist(x: (usize, usize), y: (usize, usize)) {
-    (y.0 - x.0) + (y.1 - x.1)
+fn l1_dist(v0: (usize, usize), v1: (usize, usize)) -> usize {
+    (v1.0 as i32 - v0.0 as i32).abs() as usize + (v1.1 as i32 - v0.1 as i32).abs() as usize
+}
+
+fn expand_universe(planets: HashSet<(usize, usize)>, empty_rows: &Vec<usize>, empty_cols: &Vec<usize>, coefficient: usize) -> HashSet<(usize, usize)> {
+
+    let mut expanded: HashSet<(usize, usize)> = HashSet::new();
+
+    for &(x, y) in planets.iter() {
+        let mut xx = x;
+        let mut yy = y;
+        for (i, &ex) in empty_cols.iter().enumerate() {
+            if x > ex {
+                xx += coefficient;
+            }
+        }
+        for (i, &ey) in empty_rows.iter().enumerate() {
+            if y > ey {
+                yy += coefficient;
+            }
+        }
+        expanded.insert((xx, yy));
+    }
+
+    expanded
+}
+
+fn compute_distance_sum(planets: &HashSet<(usize, usize)>) -> usize {
+    let mut total: usize = 0;
+    let mut already_visited: HashSet<(usize, usize)> = HashSet::new();
+    for (x, y) in planets.iter() {
+        for (xx, yy) in planets.iter() {
+            if (xx, yy) == (x, y) || already_visited.contains(&(*xx, *yy)) {
+                continue
+            }
+            let d = l1_dist((*x, *y), (*xx, *yy));
+            total += d;
+            // println!("|{:?} - {:?}| = {:?}", (*x, *y), (*xx, *yy), d);
+        }
+        already_visited.insert((*x, *y));
+    }
+    total
 }
 
 impl Solution for Day11 {
@@ -52,46 +92,20 @@ impl Solution for Day11 {
 
     fn part1(&self, input: &String) -> Result<i32, String> {
         let (width, height, m, empty_rows, empty_cols) = parse(input);
-        println!("{:?}", m);
-        println!("{:?}", empty_rows);
-        println!("{:?}", empty_cols);
-        let mut expanded_m: HashSet<(usize, usize)> = HashSet::new();
-        for x in empty_cols.iter() {
-            for y in 0..height {
-                if m.contains(&(x, y)) {
-                    expanded_m.insert((x + 1, y));
-                }
-            }
-        }
-        for y in empty_rows.iter() {
-            for x in 0..rows {
-                if m.contains(&(x, y)) {
-                    expanded_m.insert((x, y + 1));
-                }
-            }
-        }
+        let expanded = expand_universe(m, &empty_rows, &empty_cols, 1);
+        let total = compute_distance_sum(&expanded);
 
-        let mut total: usize = 0;
-        for (x, y) in expanded_m.iter() {
-            let mut min_dist: usize = usize::MAX;
-            for (xx, yy) in expanded_m.iter() {
-                if (xx, yy) == (x, y) {
-                    continue
-                }
-                let d = l1_dist((x, y), (xx, yy));
-                if d < min_dist {
-                    min_dist = d;
-                }
-            }
-            total += min_dist;
-        }
-
-        println!("{:?}", total);
+        println!("Part 1: {:?}", total);
 
         Ok(5)
     }
 
     fn part2(&self, input: &String) -> Result<i32, String> {
+        let (width, height, m, empty_rows, empty_cols) = parse(input);
+        let expanded = expand_universe(m, &empty_rows, &empty_cols, 999999);
+        let total = compute_distance_sum(&expanded);
+
+        println!("Part 2: {:?}", total);
         Ok(5)
     }
 }
