@@ -149,7 +149,7 @@ impl Solution for Day13 {
         Ok(5)
     }
 
-    fn part2(&self, input: &String) -> Result<i32, String> {
+    fn part2(&self, _input: &String) -> Result<i32, String> {
         Ok(5)
     }
 }

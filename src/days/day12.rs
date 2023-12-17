@@ -94,7 +94,7 @@ impl Solution for Day12 {
     }
 
     fn part2(&self, input: &String) -> Result<i32, String> {
-        let records = parse(input);
+        let _records = parse(input);
         Ok(5)
     }
 }

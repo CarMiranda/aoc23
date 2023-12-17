@@ -1,14 +1,14 @@
 use crate::days::common::Solution;
 
-pub struct DayNN {}
+pub struct Day25 {}
 
-impl DayNN {
+impl Day25 {
     pub fn new() -> Self {
-        DayNN {}
+        Day25 {}
     }
 }
 
-impl Solution for DayNN {
+impl Solution for Day25 {
     type ParsedInput = String;
     type Part1Output = i32;
     type Part2Output = i32;
