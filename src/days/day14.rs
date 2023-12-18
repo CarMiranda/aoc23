@@ -45,13 +45,13 @@ impl Platform {
 
     pub fn tilt_south(&mut self) {
         let mut tilted: HashSet<Coordinates> = HashSet::new();
-        for y in (self.height-1)..=0 {
+        for y in (0..self.height).rev() {
             for x in 0..self.width {
                 if !self.boulders.contains(&(x, y)) {
                     continue;
                 }
-                let mut n = 0;
-                for i in 0..y {
+                let mut n = self.height - 1;
+                for i in ((y+1)..self.height).rev() {
                     if self.rocks.contains(&(x, i)) || tilted.contains(&(x, i)) {
                         n = i - 1;
                     }
@@ -63,7 +63,7 @@ impl Platform {
         self.boulders = tilted;
     }
 
-    pub fn tilt_east(&mut self) {
+    pub fn tilt_west(&mut self) {
         let mut tilted: HashSet<Coordinates> = HashSet::new();
         for x in 0..self.width {
             for y in 0..self.height {
@@ -83,15 +83,15 @@ impl Platform {
         self.boulders = tilted;
     }
 
-    pub fn tilt_west(&mut self) {
+    pub fn tilt_east(&mut self) {
         let mut tilted: HashSet<Coordinates> = HashSet::new();
-        for x in (self.width-1)..=0 {
+        for x in (0..self.width).rev() {
             for y in 0..self.height {
                 if !self.boulders.contains(&(x, y)) {
                     continue;
                 }
-                let mut n = 0;
-                for i in 0..x {
+                let mut n = self.width - 1;
+                for i in ((x+1)..self.width).rev() {
                     if self.rocks.contains(&(i, y)) || tilted.contains(&(i, y)) {
                         n = i - 1;
                     }
@@ -165,6 +165,7 @@ fn print_platform(p: &Platform) {
         }
         println!("");
     }
+    println!("");
 }
 
 impl Solution for Day14 {
@@ -178,10 +179,7 @@ impl Solution for Day14 {
 
     fn part1(&self, input: &String) -> Result<i32, String> {
         let mut platform = parse(input);
-        //print_platform(&platform);
         platform.tilt_north();
-        //println!("");
-        //print_platform(&platform);
         let r = platform.count();
         println!("{}", r);
         Ok(5)
@@ -189,14 +187,68 @@ impl Solution for Day14 {
 
     fn part2(&self, input: &String) -> Result<i32, String> {
         let mut platform = parse(input);
-        //print_platform(&platform);
-        for _ in 0..1000000000 {
-            platform.shake();
-        }
-        //println!("");
-        //print_platform(&platform);
-        let r = platform.count();
+        let r = find_cycle(&mut platform, 1000000000, 50); 
         println!("{}", r);
         Ok(5)
     }
+}
+
+fn find_cycle(p: &mut Platform, nb_iter: usize, buffer_size: usize) -> u64 {
+    let mut i: usize = 0;
+    let mut buffer: Vec<u64> = Vec::with_capacity(buffer_size);
+    let mut all: Vec<u64> = Vec::new();
+    let mut cycle_length = 0;
+    while cycle_length == 0 {
+        for i in 0..buffer_size {
+            p.shake();
+            buffer.push(p.count());
+        }
+        all.extend(buffer.clone());
+        buffer.clear();
+
+        let last_count = *all.last().unwrap();
+        let mut i = 1;
+        while i < all.len() {
+            if let Some(previous_occurrence) = all.iter().rev().skip(i).position(|&x| x == last_count) {
+                let mut li = all.len() - 1;
+                let mut pi = previous_occurrence;
+                while li > previous_occurrence && all[li] == all[pi] {
+                    li -= 1;
+                    pi -= 1;
+                }
+                if li == previous_occurrence {
+                    cycle_length = all.len() - previous_occurrence;
+                    break;
+                } else {
+                    i += previous_occurrence + 1;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+        
+    let mut found: bool = true;
+    let mut si: usize = 0;
+    loop {
+        let mut i = si;
+        for i in si..(si+cycle_length) {
+            if all[i] != all[i + cycle_length] {
+                found = false;
+                break;
+            }
+        }
+
+        if found {
+            break
+        }
+
+        found = true;
+        si += 1;
+    }
+
+    println!("Found cycle starting at {} with length {}", &si, &nb_iter);
+
+    let a = (nb_iter - si) % cycle_length;
+    all[a]
 }
