@@ -39,7 +39,7 @@ impl Solution for Day04 {
                     .map(|x| x.parse::<i32>().unwrap())
                     .collect::<HashSet<i32>>();
                 let inter = w.intersection(&m);
-                inter.fold(1, |a, x| 2 * a) / 2
+                inter.fold(1, |a, _x| 2 * a) / 2
             })
             .sum::<i32>();
         Ok(r)

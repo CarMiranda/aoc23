@@ -17,11 +17,11 @@ impl Solution for Day01 {
         std::fs::read_to_string(input_file)
     }
 
-    fn part1(&self, input: &String) -> Result<i32, String> {
+    fn part1(&self, _input: &String) -> Result<i32, String> {
         Ok(5)
     }
 
-    fn part2(&self, input: &String) -> Result<i32, String> {
+    fn part2(&self, _input: &String) -> Result<i32, String> {
         Ok(5)
     }
 }

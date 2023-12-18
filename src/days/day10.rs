@@ -122,7 +122,7 @@ fn get_column_area(column: &Vec<usize>) -> u64 {
     let mut isin = false;
     let mut area: u64 = 0;
     let column = merge_segments(column);
-    let mut i: usize = 0;
+    let _i: usize = 0;
     let mut ybase: u64 = 0;
 
     for &(ys, ye) in column.iter() {
@@ -161,7 +161,7 @@ fn determinant(v: &Vec<(usize, usize)>) -> i32 {
 }
 
 fn get_inners_area(polygon: &Vec<(usize, usize)>) -> u64 {
-    let mut total: u64 = 0;
+    let _total: u64 = 0;
     let det = determinant(&polygon).abs() / 2;
     println!("{:?}", det);
     println!("{:?}", det - polygon.len() as i32);
@@ -241,7 +241,7 @@ impl Solution for Day10 {
         Ok(in_cnt)
     }
 
-    fn part2(&self, input: &String) -> Result<i32, String> {
+    fn part2(&self, _input: &String) -> Result<i32, String> {
         Ok(5)
     }
 }

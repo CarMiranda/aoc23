@@ -153,9 +153,9 @@ fn parse(input: &String) -> Platform {
 fn print_platform(p: &Platform) {
     for y in 0..p.height {
         for x in 0..p.width {
-            if let Some(c) = p.boulders.get(&(x, y)) {
+            if let Some(_c) = p.boulders.get(&(x, y)) {
                 print!("O");
-            } else if let Some(c) = p.rocks.get(&(x, y)) {
+            } else if let Some(_c) = p.rocks.get(&(x, y)) {
                 print!("#");
             } else {
                 print!(".");
@@ -192,12 +192,12 @@ impl Solution for Day14 {
 }
 
 fn find_cycle(p: &mut Platform, nb_iter: usize, buffer_size: usize) -> u64 {
-    let mut i: usize = 0;
+    let _i: usize = 0;
     let mut buffer: Vec<u64> = Vec::with_capacity(buffer_size);
     let mut all: Vec<u64> = Vec::new();
     let mut cycle_length = 0;
     while cycle_length == 0 {
-        for i in 0..buffer_size {
+        for _i in 0..buffer_size {
             p.shake();
             buffer.push(p.count());
         }
@@ -231,7 +231,7 @@ fn find_cycle(p: &mut Platform, nb_iter: usize, buffer_size: usize) -> u64 {
     let mut found: bool = true;
     let mut si: usize = 0;
     loop {
-        let mut i = si;
+        let _i = si;
         for i in si..(si + cycle_length) {
             if all[i] != all[i + cycle_length] {
                 found = false;

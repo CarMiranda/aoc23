@@ -1,5 +1,5 @@
 use crate::days::common::Solution;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashSet};
 
 pub struct Day11 {}
 
@@ -62,12 +62,12 @@ fn expand_universe(
     for &(x, y) in planets.iter() {
         let mut xx = x;
         let mut yy = y;
-        for (i, &ex) in empty_cols.iter().enumerate() {
+        for (_i, &ex) in empty_cols.iter().enumerate() {
             if x > ex {
                 xx += coefficient;
             }
         }
-        for (i, &ey) in empty_rows.iter().enumerate() {
+        for (_i, &ey) in empty_rows.iter().enumerate() {
             if y > ey {
                 yy += coefficient;
             }
@@ -105,7 +105,7 @@ impl Solution for Day11 {
     }
 
     fn part1(&self, input: &String) -> Result<i32, String> {
-        let (width, height, m, empty_rows, empty_cols) = parse(input);
+        let (_width, _height, m, empty_rows, empty_cols) = parse(input);
         let expanded = expand_universe(m, &empty_rows, &empty_cols, 1);
         let total = compute_distance_sum(&expanded);
 
@@ -115,7 +115,7 @@ impl Solution for Day11 {
     }
 
     fn part2(&self, input: &String) -> Result<i32, String> {
-        let (width, height, m, empty_rows, empty_cols) = parse(input);
+        let (_width, _height, m, empty_rows, empty_cols) = parse(input);
         let expanded = expand_universe(m, &empty_rows, &empty_cols, 999999);
         let total = compute_distance_sum(&expanded);
 

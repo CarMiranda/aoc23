@@ -31,7 +31,7 @@ fn part2(input: &String) -> u64 {
     }
 
     for operation in input.trim().split(",") {
-        let mut label: String;
+        let label: String;
         let mut power: u8 = u8::MAX;
         let mut op: char = '-';
         if operation.ends_with('-') {
@@ -47,7 +47,7 @@ fn part2(input: &String) -> u64 {
             op = '=';
         }
         let box_id = parse_word(&label) as usize;
-        let mut bbox = boxes.get_mut(box_id).unwrap();
+        let bbox = boxes.get_mut(box_id).unwrap();
         match op {
             '=' => {
                 let mut found = false;

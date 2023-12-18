@@ -3,7 +3,7 @@ use crate::days::common::Solution;
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap};
 
-const Directions: [(isize, isize); 4] = [(-1, 0), (0, -1), (0, 1), (1, 0)];
+const DIRECTIONS: [(isize, isize); 4] = [(-1, 0), (0, -1), (0, 1), (1, 0)];
 
 pub struct Day17 {}
 
@@ -85,7 +85,7 @@ fn dijkstra(
     while !front.is_empty() {
         //println!("{:?}", &front);
         let current = front.pop().unwrap().0;
-        for &(dx, dy) in Directions.iter() {
+        for &(dx, dy) in DIRECTIONS.iter() {
             let sn = check_fn(current.dir, (dx, dy), current.straight);
             if sn == 0 || sn == max_straight {
                 continue;
