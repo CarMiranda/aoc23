@@ -9,42 +9,39 @@ impl Day10 {
     }
 }
 
-fn replace_s(
-    p: (usize, usize),
-    m: &HashMap<(usize, usize), char>,
-) -> char {
+fn replace_s(p: (usize, usize), m: &HashMap<(usize, usize), char>) -> char {
     let mut nmap = (false, false, false, false);
     // Up
     if p.1 > 0 {
-    if let Some(c) = m.get(&(p.0, p.1 - 1)) {
-       match c {
-           'F' | '7' | '|' => nmap.0 = true,
-           _ => ()
-       };
-    };
+        if let Some(c) = m.get(&(p.0, p.1 - 1)) {
+            match c {
+                'F' | '7' | '|' => nmap.0 = true,
+                _ => (),
+            };
+        };
     }
     // Down
     if let Some(c) = m.get(&(p.0, p.1 + 1)) {
-       match c {
-           'J' | 'L' | '|' => nmap.1 = true,
-           _ => ()
-       };
+        match c {
+            'J' | 'L' | '|' => nmap.1 = true,
+            _ => (),
+        };
     };
     // right
     if let Some(c) = m.get(&(p.0 + 1, p.1)) {
-       match c {
-           'J' | '7' | '-' => nmap.2 = true,
-           _ => ()
-       };
+        match c {
+            'J' | '7' | '-' => nmap.2 = true,
+            _ => (),
+        };
     };
     // left
     if p.0 > 0 {
-    if let Some(c) = m.get(&(p.0 - 1, p.1)) {
-       match c {
-           'F' | 'L' | '-' => nmap.3 = true,
-           _ => ()
-       };
-    };
+        if let Some(c) = m.get(&(p.0 - 1, p.1)) {
+            match c {
+                'F' | 'L' | '-' => nmap.3 = true,
+                _ => (),
+            };
+        };
     }
 
     match nmap {
@@ -54,14 +51,11 @@ fn replace_s(
         (false, true, true, false) => 'F',
         (false, true, false, true) => '7',
         (false, false, true, true) => '-',
-        _ => panic!()
+        _ => panic!(),
     }
 }
 
-fn connected_neighbours(
-    c: char,
-    p: (usize, usize),
-) -> ((usize, usize), (usize, usize)) {
+fn connected_neighbours(c: char, p: (usize, usize)) -> ((usize, usize), (usize, usize)) {
     match c {
         '-' => ((p.0 - 1, p.1), (p.0 + 1, p.1)),
         'J' => ((p.0, p.1 - 1), (p.0 - 1, p.1)),
@@ -70,7 +64,7 @@ fn connected_neighbours(
         'F' => ((p.0, p.1 + 1), (p.0 + 1, p.1)),
         '7' => ((p.0, p.1 + 1), (p.0 - 1, p.1)),
         'S' => (p, p),
-        _ => panic!()
+        _ => panic!(),
     }
 }
 
@@ -115,7 +109,8 @@ fn merge_segments(v: &Vec<usize>) -> Vec<(usize, usize)> {
         }
         if i != j {
             r.push((v[i], v[j]));
-        } if i != 0 && i == j {
+        }
+        if i != 0 && i == j {
             r.push((v[i], v[j]));
         }
         i = j + 1;
@@ -157,15 +152,12 @@ fn get_inner_area(polygon: &HashSet<(usize, usize)>) -> u64 {
 }
 
 fn determinant(v: &Vec<(usize, usize)>) -> i32 {
-    v
-        .iter()
-        .fold(
-            (0, v.last().unwrap()),
-            |(d, p), n| {
-                let dd = (p.0 * n.1) as i32 - (p.1 * n.0) as i32;
-                (d + dd, n)
-            }
-        ).0
+    v.iter()
+        .fold((0, v.last().unwrap()), |(d, p), n| {
+            let dd = (p.0 * n.1) as i32 - (p.1 * n.0) as i32;
+            (d + dd, n)
+        })
+        .0
 }
 
 fn get_inners_area(polygon: &Vec<(usize, usize)>) -> u64 {
@@ -238,7 +230,7 @@ impl Solution for Day10 {
                 if let Some(c) = m.get(&(x, y)) {
                     match c {
                         '|' | 'F' | '7' => isin = !isin,
-                        _ => ()
+                        _ => (),
                     }
                 } else if isin {
                     in_cnt += 1;

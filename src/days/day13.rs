@@ -18,15 +18,10 @@ struct Pattern {
 fn parse_pattern(input: &String) -> Pattern {
     let mirrors = input
         .lines()
-        .map(|l| {
-            l
-                .chars()
-                .map(|c| c == '#')
-                .collect::<Vec<bool>>()
-        })
+        .map(|l| l.chars().map(|c| c == '#').collect::<Vec<bool>>())
         .collect::<Vec<Vec<bool>>>();
-    Pattern { 
-        width: mirrors[0].len(), 
+    Pattern {
+        width: mirrors[0].len(),
         height: mirrors.len(),
         mirrors: mirrors,
     }
@@ -45,7 +40,7 @@ fn parse(input: &String) -> u64 {
 
 fn find_symmetry(v: &Vec<bool>) -> Vec<usize> {
     let mut axes: Vec<usize> = Vec::new();
-    for i in 1..(v.len()-1) {
+    for i in 1..(v.len() - 1) {
         if check_symmetry(v, i) {
             axes.push(i);
         }
@@ -64,8 +59,6 @@ fn col_major(m: &Vec<Vec<bool>>) -> Vec<Vec<bool>> {
     }
     t
 }
-
-
 
 fn check_symmetry(v: &Vec<bool>, i: usize) -> bool {
     let mut s = i - 1;
@@ -116,7 +109,6 @@ fn print_board(m: &Vec<Vec<bool>>) {
 }
 
 fn find_symmetries(p: &Pattern) -> u64 {
-
     let row_symmetry = find_row_symmetry(p);
     //print_board(&p.mirrors);
     let mirrors = col_major(&p.mirrors);
@@ -140,7 +132,7 @@ impl Solution for Day13 {
 
     fn part1(&self, input: &String) -> Result<i32, String> {
         // let patterns = parse(input);
-        // let mut total = 0u64; 
+        // let mut total = 0u64;
         // for pattern in patterns.iter() {
         //     total += find_symmetries(&pattern);
         // }

@@ -1,6 +1,6 @@
-use std::time::Instant;
-use aoc23::days::{*, common::Solution};
+use aoc23::days::{common::Solution, *};
 use clap::Parser;
+use std::time::Instant;
 
 #[derive(Parser)]
 struct Cli {
@@ -9,7 +9,9 @@ struct Cli {
     part: Option<u8>,
 }
 
-fn get_day(day: i8) -> Box<dyn Solution<ParsedInput=String, Part1Output=i32, Part2Output=i32>> {
+fn get_day(
+    day: i8,
+) -> Box<dyn Solution<ParsedInput = String, Part1Output = i32, Part2Output = i32>> {
     match day {
         1 => Box::new(day01::Day01::new()),
         2 => Box::new(day02::Day02::new()),
@@ -36,12 +38,11 @@ fn get_day(day: i8) -> Box<dyn Solution<ParsedInput=String, Part1Output=i32, Par
         23 => Box::new(day23::Day23::new()),
         24 => Box::new(day24::Day24::new()),
         25 => Box::new(day25::Day25::new()),
-        _ => unimplemented!()
+        _ => unimplemented!(),
     }
 }
 
 fn main() {
-
     let cli = Cli::parse();
     let d = get_day(cli.day);
     let start_time = Instant::now();
@@ -59,5 +60,4 @@ fn main() {
             }
         }
     }
-    
 }

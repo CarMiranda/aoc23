@@ -90,7 +90,6 @@ fn part1(input: &String) -> Result<i32, String> {
         while x < width {
             let c = line.chars().nth(x).unwrap();
             if c.is_numeric() {
-
                 let mut num = String::new();
                 let mut iter = line.chars().skip(x);
                 let mut i = iter.next();
@@ -98,7 +97,8 @@ fn part1(input: &String) -> Result<i32, String> {
                     num.push_str(&i.unwrap().to_string());
                     i = iter.next();
                 }
-                bp.numbers.insert((x, x + num.len(), y), num.parse::<u32>().unwrap());
+                bp.numbers
+                    .insert((x, x + num.len(), y), num.parse::<u32>().unwrap());
                 x += num.len() - 1;
             } else if c != '.' {
                 bp.symbols.insert((x, y), c);
@@ -106,10 +106,7 @@ fn part1(input: &String) -> Result<i32, String> {
             x += 1;
         }
     }
-    let r = bp
-        .find_symbol_neighbours()
-        .iter()
-        .sum::<u32>();
+    let r = bp.find_symbol_neighbours().iter().sum::<u32>();
     Ok(r as i32)
 }
 
@@ -122,7 +119,6 @@ fn part2(input: &String) -> Result<i32, String> {
         while x < width {
             let c = line.chars().nth(x).unwrap();
             if c.is_numeric() {
-
                 let mut num = String::new();
                 let mut iter = line.chars().skip(x);
                 let mut i = iter.next();
@@ -130,7 +126,8 @@ fn part2(input: &String) -> Result<i32, String> {
                     num.push_str(&i.unwrap().to_string());
                     i = iter.next();
                 }
-                bp.numbers.insert((x, x + num.len(), y), num.parse::<u32>().unwrap());
+                bp.numbers
+                    .insert((x, x + num.len(), y), num.parse::<u32>().unwrap());
                 x += num.len() - 1;
             } else if c == '*' {
                 bp.symbols.insert((x, y), c);
@@ -139,10 +136,7 @@ fn part2(input: &String) -> Result<i32, String> {
         }
     }
 
-    let r = bp
-        .find_gear_ratios()
-        .iter()
-        .sum::<u32>();
+    let r = bp.find_gear_ratios().iter().sum::<u32>();
     Ok(r as i32)
 }
 

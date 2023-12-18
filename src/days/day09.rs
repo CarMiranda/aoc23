@@ -11,7 +11,12 @@ impl Day09 {
 fn parse(input: &String) -> Vec<Vec<i32>> {
     input
         .lines()
-        .map(|l| l.trim().split(" ").map(|x| x.parse::<i32>().unwrap()).collect::<Vec<i32>>())
+        .map(|l| {
+            l.trim()
+                .split(" ")
+                .map(|x| x.parse::<i32>().unwrap())
+                .collect::<Vec<i32>>()
+        })
         .collect()
 }
 
@@ -19,13 +24,13 @@ fn solve_history(history: &Vec<i32>) -> i32 {
     let mut diffs: Vec<i32> = Vec::new();
     let mut all_zeros: bool = true;
     for i in 0..(history.len() - 1) {
-        let d = history[i+1] - history[i];
+        let d = history[i + 1] - history[i];
         diffs.push(d);
         if all_zeros && d != 0 {
             all_zeros = false;
         }
     }
-    let l = history[history.len()-1];
+    let l = history[history.len() - 1];
     if all_zeros {
         return l;
     }
@@ -36,7 +41,7 @@ fn solve_history_bw(history: &Vec<i32>) -> i32 {
     let mut diffs: Vec<i32> = Vec::new();
     let mut all_zeros: bool = true;
     for i in 0..(history.len() - 1) {
-        let d = history[i+1] - history[i];
+        let d = history[i + 1] - history[i];
         diffs.push(d);
         if all_zeros && d != 0 {
             all_zeros = false;

@@ -9,8 +9,7 @@ impl Day15 {
 }
 
 fn parse_word(word: &String) -> u64 {
-    word
-        .trim()
+    word.trim()
         .chars()
         .map(|c| c as u64)
         .fold(0, |acc, c| (acc + c) * 17 % 256)
@@ -36,14 +35,19 @@ fn part2(input: &String) -> u64 {
         let mut power: u8 = u8::MAX;
         let mut op: char = '-';
         if operation.ends_with('-') {
-            label = operation.chars().take(operation.len() - 1).collect::<Vec<char>>().into_iter().collect();
+            label = operation
+                .chars()
+                .take(operation.len() - 1)
+                .collect::<Vec<char>>()
+                .into_iter()
+                .collect();
         } else {
             label = operation.split("=").nth(0).unwrap().to_string();
             power = operation.split("=").nth(1).unwrap().parse::<u8>().unwrap();
             op = '=';
         }
-        let box_id = parse_word(&label) as usize; 
-        let mut bbox = boxes.get_mut(box_id).unwrap(); 
+        let box_id = parse_word(&label) as usize;
+        let mut bbox = boxes.get_mut(box_id).unwrap();
         match op {
             '=' => {
                 let mut found = false;
@@ -57,7 +61,7 @@ fn part2(input: &String) -> u64 {
                 if !found {
                     bbox.push((label.clone(), power));
                 }
-            },
+            }
             '-' => {
                 let mut ii = usize::MAX;
                 for (i, (s, _)) in bbox.iter().enumerate() {
@@ -69,8 +73,8 @@ fn part2(input: &String) -> u64 {
                 if ii < usize::MAX {
                     bbox.remove(ii);
                 }
-            },
-            _ => ()
+            }
+            _ => (),
         };
     }
 
@@ -78,8 +82,7 @@ fn part2(input: &String) -> u64 {
         .iter()
         .enumerate()
         .map(|(i, b)| {
-            b
-                .iter()
+            b.iter()
                 .enumerate()
                 .map(|(j, l)| (i as u64 + 1) * (j as u64 + 1) * (l.1 as u64))
                 .sum::<u64>()

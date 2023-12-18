@@ -1,16 +1,12 @@
 use crate::days::common::Solution;
 use nom::{
     branch::alt,
-    combinator::opt,
     bytes::complete::tag,
+    character::complete::{i32 as nomi32, space1, u8 as nomu8},
+    combinator::opt,
     multi::many1,
-    character::complete::{
-        u8 as nomu8,
-        i32 as nomi32,
-        space1
-    },
-    sequence::{tuple, preceded},
-    IResult
+    sequence::{preceded, tuple},
+    IResult,
 };
 
 pub struct Day02 {}
@@ -44,84 +40,85 @@ impl Bag {
 
 impl Into<Bag> for &Vec<(u8, &str)> {
     fn into(self) -> Bag {
-        self.iter().fold(Bag(0, 0, 0), |a, (i, c)| {
-            match c {
-                &"red" => Bag(*i as u32, a.1, a.2),
-                &"green" => Bag(a.0, *i as u32, a.2),
-                &"blue" => Bag(a.0, a.1, *i as u32),
-                &_ => panic!("This should not happen"),
-            }
+        self.iter().fold(Bag(0, 0, 0), |a, (i, c)| match c {
+            &"red" => Bag(*i as u32, a.1, a.2),
+            &"green" => Bag(a.0, *i as u32, a.2),
+            &"blue" => Bag(a.0, a.1, *i as u32),
+            &_ => panic!("This should not happen"),
         })
     }
 }
 
 fn parse_sample(input: &str) -> IResult<&str, Vec<(u8, &str)>> {
-    many1(
-        preceded(
-            opt(tag(", ")),
-            tuple((
-                nomu8,
-                preceded(
-                    space1,
-                    alt((
-                        tag("red"),
-                        tag("green"),
-                        tag("blue")
-                    )),
-                ),
-            ))
-        )
-    )(input)
+    many1(preceded(
+        opt(tag(", ")),
+        tuple((
+            nomu8,
+            preceded(space1, alt((tag("red"), tag("green"), tag("blue")))),
+        )),
+    ))(input)
 }
 
 fn parse_samples(input: &str) -> IResult<&str, Vec<Vec<(u8, &str)>>> {
-    many1(
-        preceded(
-            opt(tag("; ")),
-            parse_sample
-        )
-    )(input)
+    many1(preceded(opt(tag("; ")), parse_sample))(input)
 }
 
 fn parse_game(input: &str) -> IResult<&str, (i32, Vec<Vec<(u8, &str)>>)> {
     tuple((
-        preceded(
-            tag("Game "),
-            nomi32,
-        ),
-        preceded(
-            tag(": "),
-            parse_samples
-        ),
+        preceded(tag("Game "), nomi32),
+        preceded(tag(": "), parse_samples),
     ))(input)
 }
-
 
 fn parse_bag(s: &String) -> Bag {
     let res = Bag(0, 0, 0);
     s.split(", ").fold(res, |mut r, ball| {
         if ball.ends_with("d") {
-            r.0 = ball.split(" ").nth(0).unwrap().trim().parse::<u32>().unwrap();
+            r.0 = ball
+                .split(" ")
+                .nth(0)
+                .unwrap()
+                .trim()
+                .parse::<u32>()
+                .unwrap();
         } else if ball.ends_with("n") {
-            r.1 = ball.split(" ").nth(0).unwrap().trim().parse::<u32>().unwrap();
+            r.1 = ball
+                .split(" ")
+                .nth(0)
+                .unwrap()
+                .trim()
+                .parse::<u32>()
+                .unwrap();
         } else if ball.ends_with("e") {
-            r.2 = ball.split(" ").nth(0).unwrap().trim().parse::<u32>().unwrap();
+            r.2 = ball
+                .split(" ")
+                .nth(0)
+                .unwrap()
+                .trim()
+                .parse::<u32>()
+                .unwrap();
         }
         r
     })
 }
 
 fn parse_line(line: &String) -> (u32, Bag) {
-    let game = line.split(":").nth(0).unwrap().split(" ").nth(1).unwrap().parse::<u32>().unwrap();
+    let game = line
+        .split(":")
+        .nth(0)
+        .unwrap()
+        .split(" ")
+        .nth(1)
+        .unwrap()
+        .parse::<u32>()
+        .unwrap();
     let bag = line
         .split(": ")
         .nth(1)
         .unwrap()
         .split("; ")
         .map(|b| parse_bag(&b.to_string()))
-        .fold(Bag(0, 0, 0), |pb, nb| {
-            pb.merge(nb)
-        });
+        .fold(Bag(0, 0, 0), |pb, nb| pb.merge(nb));
     (game, bag)
 }
 
@@ -132,13 +129,10 @@ fn part1_alt(input: &String) -> Result<i32, String> {
         .split("\n")
         .map(|g| {
             let (_, (i, v)) = parse_game(g).unwrap();
-            let v = v.iter().fold(
-                Bag(0, 0, 0), 
-                |a, b| {
-                    let b: Bag = b.into();
-                    a.merge(b)
-                }
-            );
+            let v = v.iter().fold(Bag(0, 0, 0), |a, b| {
+                let b: Bag = b.into();
+                a.merge(b)
+            });
             (i, v)
         })
         .filter(|(_, b)| config.contains(b))
@@ -153,13 +147,10 @@ fn part2_alt(input: &String) -> Result<i32, String> {
         .split("\n")
         .map(|g| {
             let (_, (_, v)) = parse_game(g).unwrap();
-            let v = v.iter().fold(
-                Bag(0, 0, 0), 
-                |a, b| {
-                    let b: Bag = b.into();
-                    a.merge(b)
-                }
-            );
+            let v = v.iter().fold(Bag(0, 0, 0), |a, b| {
+                let b: Bag = b.into();
+                a.merge(b)
+            });
             v.prod()
         })
         .sum::<u32>();
@@ -199,7 +190,6 @@ impl Solution for Day02 {
         std::fs::read_to_string(input_file)
     }
 
-
     fn part1(&self, input: &String) -> Result<i32, String> {
         part1_alt(input)
     }
@@ -208,4 +198,3 @@ impl Solution for Day02 {
         part2_alt(input)
     }
 }
-

@@ -10,9 +10,7 @@ impl Day14 {
     }
 }
 
-
 type Coordinates = (usize, usize);
-
 
 #[derive(Debug)]
 struct Platform {
@@ -51,7 +49,7 @@ impl Platform {
                     continue;
                 }
                 let mut n = self.height - 1;
-                for i in ((y+1)..self.height).rev() {
+                for i in ((y + 1)..self.height).rev() {
                     if self.rocks.contains(&(x, i)) || tilted.contains(&(x, i)) {
                         n = i - 1;
                     }
@@ -91,7 +89,7 @@ impl Platform {
                     continue;
                 }
                 let mut n = self.width - 1;
-                for i in ((x+1)..self.width).rev() {
+                for i in ((x + 1)..self.width).rev() {
                     if self.rocks.contains(&(i, y)) || tilted.contains(&(i, y)) {
                         n = i - 1;
                     }
@@ -131,7 +129,7 @@ fn parse(input: &String) -> Platform {
     let mut width = 0;
     let mut height = 0;
 
-    for (y, l) in  input.lines().enumerate() {
+    for (y, l) in input.lines().enumerate() {
         for (x, c) in l.chars().enumerate() {
             match c {
                 '#' => rocks.insert((x, y)),
@@ -187,7 +185,7 @@ impl Solution for Day14 {
 
     fn part2(&self, input: &String) -> Result<i32, String> {
         let mut platform = parse(input);
-        let r = find_cycle(&mut platform, 1000000000, 50); 
+        let r = find_cycle(&mut platform, 1000000000, 50);
         println!("{}", r);
         Ok(5)
     }
@@ -209,7 +207,9 @@ fn find_cycle(p: &mut Platform, nb_iter: usize, buffer_size: usize) -> u64 {
         let last_count = *all.last().unwrap();
         let mut i = 1;
         while i < all.len() {
-            if let Some(previous_occurrence) = all.iter().rev().skip(i).position(|&x| x == last_count) {
+            if let Some(previous_occurrence) =
+                all.iter().rev().skip(i).position(|&x| x == last_count)
+            {
                 let mut li = all.len() - 1;
                 let mut pi = previous_occurrence;
                 while li > previous_occurrence && all[li] == all[pi] {
@@ -227,12 +227,12 @@ fn find_cycle(p: &mut Platform, nb_iter: usize, buffer_size: usize) -> u64 {
             }
         }
     }
-        
+
     let mut found: bool = true;
     let mut si: usize = 0;
     loop {
         let mut i = si;
-        for i in si..(si+cycle_length) {
+        for i in si..(si + cycle_length) {
             if all[i] != all[i + cycle_length] {
                 found = false;
                 break;
@@ -240,7 +240,7 @@ fn find_cycle(p: &mut Platform, nb_iter: usize, buffer_size: usize) -> u64 {
         }
 
         if found {
-            break
+            break;
         }
 
         found = true;

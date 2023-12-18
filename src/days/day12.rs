@@ -18,21 +18,21 @@ struct Record {
 }
 
 impl Record {
-    pub fn simplify(&mut self) {
-        
-    }
+    pub fn simplify(&mut self) {}
 }
 
 fn parse_line(line: &String) -> Record {
-
     let r = line
         .split(' ')
-        .nth(0).unwrap()
-        .chars().collect::<Vec<char>>();
+        .nth(0)
+        .unwrap()
+        .chars()
+        .collect::<Vec<char>>();
 
     let conditions = line
         .split(' ')
-        .nth(1).unwrap()
+        .nth(1)
+        .unwrap()
         .split(',')
         .map(|x| x.parse::<u8>().unwrap())
         .collect::<Vec<u8>>();
@@ -46,8 +46,8 @@ fn parse_line(line: &String) -> Record {
         // Range ends
         if r[i] != c {
             match c {
-                '?' => empty.push((s, i-1)),
-                '#' => filled.push((s, i-1)),
+                '?' => empty.push((s, i - 1)),
+                '#' => filled.push((s, i - 1)),
                 '.' => (),
                 _ => panic!("Bananas"),
             };
@@ -58,8 +58,8 @@ fn parse_line(line: &String) -> Record {
     }
 
     match c {
-        '?' => empty.push((s, i-1)),
-        '#' => filled.push((s, i-1)),
+        '?' => empty.push((s, i - 1)),
+        '#' => filled.push((s, i - 1)),
         '.' => (),
         _ => panic!("Bananas"),
     };

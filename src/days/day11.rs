@@ -1,5 +1,5 @@
 use crate::days::common::Solution;
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 
 pub struct Day11 {}
 
@@ -9,7 +9,15 @@ impl Day11 {
     }
 }
 
-fn parse(input: &String) -> (usize, usize, HashSet<(usize, usize)>, Vec<usize>, Vec<usize>) {
+fn parse(
+    input: &String,
+) -> (
+    usize,
+    usize,
+    HashSet<(usize, usize)>,
+    Vec<usize>,
+    Vec<usize>,
+) {
     let mut used_cols: HashSet<usize> = HashSet::new();
     let mut empty_rows: Vec<usize> = Vec::new();
     let mut m: HashSet<(usize, usize)> = HashSet::new();
@@ -31,7 +39,9 @@ fn parse(input: &String) -> (usize, usize, HashSet<(usize, usize)>, Vec<usize>, 
         }
         height += 1;
     }
-    let mut empty_cols = (0..width).filter(|x| !used_cols.contains(x)).collect::<Vec<usize>>();
+    let mut empty_cols = (0..width)
+        .filter(|x| !used_cols.contains(x))
+        .collect::<Vec<usize>>();
     empty_cols.sort_unstable();
 
     (width, height, m, empty_rows, empty_cols)
@@ -41,8 +51,12 @@ fn l1_dist(v0: (usize, usize), v1: (usize, usize)) -> usize {
     (v1.0 as i32 - v0.0 as i32).abs() as usize + (v1.1 as i32 - v0.1 as i32).abs() as usize
 }
 
-fn expand_universe(planets: HashSet<(usize, usize)>, empty_rows: &Vec<usize>, empty_cols: &Vec<usize>, coefficient: usize) -> HashSet<(usize, usize)> {
-
+fn expand_universe(
+    planets: HashSet<(usize, usize)>,
+    empty_rows: &Vec<usize>,
+    empty_cols: &Vec<usize>,
+    coefficient: usize,
+) -> HashSet<(usize, usize)> {
     let mut expanded: HashSet<(usize, usize)> = HashSet::new();
 
     for &(x, y) in planets.iter() {
@@ -70,7 +84,7 @@ fn compute_distance_sum(planets: &HashSet<(usize, usize)>) -> usize {
     for (x, y) in planets.iter() {
         for (xx, yy) in planets.iter() {
             if (xx, yy) == (x, y) || already_visited.contains(&(*xx, *yy)) {
-                continue
+                continue;
             }
             let d = l1_dist((*x, *y), (*xx, *yy));
             total += d;

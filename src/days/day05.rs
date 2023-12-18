@@ -11,10 +11,10 @@ impl Day05 {
 fn apply_map(seed: u64, m: &Vec<(u64, u64, u64)>) -> u64 {
     for &(dst, src, n) in m.iter() {
         if seed < src + n && seed >= src {
-            return seed - src + dst 
+            return seed - src + dst;
         }
     }
-    return seed
+    return seed;
 }
 
 fn apply_maps(seed: u64, maps: &Vec<Vec<(u64, u64, u64)>>) -> u64 {
@@ -26,8 +26,17 @@ fn apply_maps(seed: u64, maps: &Vec<Vec<(u64, u64, u64)>>) -> u64 {
 }
 
 fn parse(input: &String) -> () {
-    let seeds = input.split("\n\n").nth(0).unwrap().split(": ").nth(1).unwrap().split(" ").map(|x| x.parse::<u64>().unwrap()).collect::<Vec<u64>>();
-    
+    let seeds = input
+        .split("\n\n")
+        .nth(0)
+        .unwrap()
+        .split(": ")
+        .nth(1)
+        .unwrap()
+        .split(" ")
+        .map(|x| x.parse::<u64>().unwrap())
+        .collect::<Vec<u64>>();
+
     let maps: Vec<Vec<(u64, u64, u64)>> = input
         .split("\n\n")
         .skip(1)
@@ -55,13 +64,13 @@ fn parse(input: &String) -> () {
     println!("{:?}", r.iter().min());
 
     let mut seed_ranges: Vec<(u64, u64)> = Vec::new();
-    for i in (0..(seeds.len() -1)).step_by(2) {
-        seed_ranges.push((seeds[i], seeds[i+1]));
+    for i in (0..(seeds.len() - 1)).step_by(2) {
+        seed_ranges.push((seeds[i], seeds[i + 1]));
     }
     let mut r = u64::MAX;
     for &(s, n) in seed_ranges.iter() {
         for i in 0..n {
-            let rr = apply_maps(s+i as u64, &maps);
+            let rr = apply_maps(s + i as u64, &maps);
             if rr < r {
                 r = rr;
                 println!("{}", r);

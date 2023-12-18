@@ -66,7 +66,12 @@ fn bounce(c: char, d: u8) -> u8 {
     }
 }
 
-fn part1(map: &HashMap<(usize, usize), char>, width: usize, height: usize, init: (usize, usize, u8)) -> u32 {
+fn part1(
+    map: &HashMap<(usize, usize), char>,
+    width: usize,
+    height: usize,
+    init: (usize, usize, u8),
+) -> u32 {
     let mut front: Vec<(usize, usize, u8)> = Vec::new();
     let mut visited: HashSet<(usize, usize, u8)> = HashSet::new();
 
@@ -77,11 +82,11 @@ fn part1(map: &HashMap<(usize, usize), char>, width: usize, height: usize, init:
             4 => {
                 front.push((init.0, init.1, 1));
                 front.push((init.0, init.1, 3));
-            },
+            }
             5 => {
                 front.push((init.0, init.1, 0));
                 front.push((init.0, init.1, 2));
-            },
+            }
             _ => panic!("BBBananas"),
         };
     } else {
@@ -91,10 +96,10 @@ fn part1(map: &HashMap<(usize, usize), char>, width: usize, height: usize, init:
     for p in front.iter() {
         visited.insert(p.clone());
     }
-    // 0 = right, 1 = up, 2 = left, 3 = down 
+    // 0 = right, 1 = up, 2 = left, 3 = down
 
     while front.len() > 0 {
-        let mut new_front : Vec<(usize, usize, u8)> = Vec::new();
+        let mut new_front: Vec<(usize, usize, u8)> = Vec::new();
         for &(x, y, d) in front.iter() {
             if x >= width || y >= height || (x == 0 && d == 2) || (y == 0 && d == 1) {
                 continue;
@@ -114,11 +119,11 @@ fn part1(map: &HashMap<(usize, usize), char>, width: usize, height: usize, init:
                     4 => {
                         new_front.push((xn, yn, 1));
                         new_front.push((xn, yn, 3));
-                    },
+                    }
                     5 => {
                         new_front.push((xn, yn, 0));
                         new_front.push((xn, yn, 2));
-                    },
+                    }
                     _ => panic!("BBBananas"),
                 };
             } else {
@@ -155,9 +160,9 @@ impl Solution for Day16 {
         let mut mm: u32 = 0;
         for i in 0..w {
             let m0 = part1(&m, w, h, (i, 0, 3));
-            let m1 = part1(&m, w, h, (i, h-1, 1));
+            let m1 = part1(&m, w, h, (i, h - 1, 1));
             let m2 = part1(&m, w, h, (0, i, 0));
-            let m3 = part1(&m, w, h, (w-1, i, 2));
+            let m3 = part1(&m, w, h, (w - 1, i, 2));
             mm = *vec![m0, m1, m2, m3, mm].iter().max().unwrap();
         }
         println!("{}", &mm);

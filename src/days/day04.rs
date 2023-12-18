@@ -1,5 +1,5 @@
 use crate::days::common::Solution;
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 
 pub struct Day04 {}
 
@@ -24,8 +24,20 @@ impl Solution for Day04 {
             .split("\n")
             .map(|l| l.split(": ").nth(1).unwrap().trim_end().replace("  ", " "))
             .map(|l| {
-                let w = l.split(" | ").nth(0).unwrap().split(" ").map(|x| x.parse::<i32>().unwrap()).collect::<HashSet<i32>>();
-                let m = l.split(" | ").nth(1).unwrap().split(" ").map(|x| x.parse::<i32>().unwrap()).collect::<HashSet<i32>>();
+                let w = l
+                    .split(" | ")
+                    .nth(0)
+                    .unwrap()
+                    .split(" ")
+                    .map(|x| x.parse::<i32>().unwrap())
+                    .collect::<HashSet<i32>>();
+                let m = l
+                    .split(" | ")
+                    .nth(1)
+                    .unwrap()
+                    .split(" ")
+                    .map(|x| x.parse::<i32>().unwrap())
+                    .collect::<HashSet<i32>>();
                 let inter = w.intersection(&m);
                 inter.fold(1, |a, x| 2 * a) / 2
             })
@@ -39,13 +51,33 @@ impl Solution for Day04 {
             .trim_end()
             .split("\n")
             .map(|l| {
-                let card = l.split(": ").nth(0).unwrap().split(" ").nth(1).unwrap().parse::<i32>().unwrap();
+                let card = l
+                    .split(": ")
+                    .nth(0)
+                    .unwrap()
+                    .split(" ")
+                    .nth(1)
+                    .unwrap()
+                    .parse::<i32>()
+                    .unwrap();
                 let nums = l.split(": ").nth(1).unwrap().trim_end().replace("  ", " ");
                 (card, nums)
             })
             .map(|(card, nums)| {
-                let w = nums.split(" | ").nth(0).unwrap().split(" ").map(|x| x.parse::<i32>().unwrap()).collect::<HashSet<i32>>();
-                let m = nums.split(" | ").nth(1).unwrap().split(" ").map(|x| x.parse::<i32>().unwrap()).collect::<HashSet<i32>>();
+                let w = nums
+                    .split(" | ")
+                    .nth(0)
+                    .unwrap()
+                    .split(" ")
+                    .map(|x| x.parse::<i32>().unwrap())
+                    .collect::<HashSet<i32>>();
+                let m = nums
+                    .split(" | ")
+                    .nth(1)
+                    .unwrap()
+                    .split(" ")
+                    .map(|x| x.parse::<i32>().unwrap())
+                    .collect::<HashSet<i32>>();
                 let inter = w.intersection(&m).copied().collect::<Vec<i32>>();
                 (card, inter)
             });
@@ -68,7 +100,7 @@ impl Solution for Day04 {
             }
         }
 
-                //2u32.pow(*x as u32 - 1)
+        //2u32.pow(*x as u32 - 1)
         let r = hm
             .iter()
             .map(|(c, x)| {
