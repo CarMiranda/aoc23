@@ -21,7 +21,7 @@ impl Day19 {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Part {
     x: u32,
     m: u32,
@@ -29,13 +29,19 @@ struct Part {
     s: u32,
 }
 
-type Rule = dyn Fn(Part) -> bool;
+impl Part {
+    pub fn value(&self) -> u32 {
+        self.x + self.m + self.a + self.s
+    }
+}
 
-fn as_rule(condition: &String, dst: &String) -> Box<Rule> {
+type Rule = dyn Fn(Part) -> String;
+
+fn as_rule(condition: String, dst: String) -> Box<Rule> {
     // If dst is empty, it means there was no =, so condition is actually dst
     if dst.is_empty() {
-        return Box::new(|_: Part| {
-            true
+        return Box::new(move |_: Part| {
+            condition.clone()
         })
     }
 
@@ -44,19 +50,19 @@ fn as_rule(condition: &String, dst: &String) -> Box<Rule> {
     if condition.contains("<") {
         let rhs: u32 = condition.split("<").nth(1).unwrap().parse::<u32>().unwrap();
         match lhs {
-            'x' => return Box::new(move |p: Part| p.x < rhs),
-            'm' => return Box::new(move |p: Part| p.m < rhs),
-            'a' => return Box::new(move |p: Part| p.a < rhs),
-            's' => return Box::new(move |p: Part| p.s < rhs),
+            'x' => return Box::new(move |p: Part| if p.x < rhs { dst.clone() } else { RULE_REJECTED.clone().to_string() }),
+            'm' => return Box::new(move |p: Part| if p.m < rhs { dst.clone() } else { RULE_REJECTED.clone().to_string() }),
+            'a' => return Box::new(move |p: Part| if p.a < rhs { dst.clone() } else { RULE_REJECTED.clone().to_string() }),
+            's' => return Box::new(move |p: Part| if p.s < rhs { dst.clone() } else { RULE_REJECTED.clone().to_string() }),
             _ => panic!("Bananas"),
         }
     } else if condition.contains(">") {
         let rhs: u32 = condition.split(">").nth(1).unwrap().parse::<u32>().unwrap();
         match lhs {
-            'x' => return Box::new(move |p: Part| p.x > rhs),
-            'm' => return Box::new(move |p: Part| p.m > rhs),
-            'a' => return Box::new(move |p: Part| p.a > rhs),
-            's' => return Box::new(move |p: Part| p.s > rhs),
+            'x' => return Box::new(move |p: Part| if p.x > rhs { dst.clone() } else { RULE_REJECTED.clone().to_string() }),
+            'm' => return Box::new(move |p: Part| if p.m > rhs { dst.clone() } else { RULE_REJECTED.clone().to_string() }),
+            'a' => return Box::new(move |p: Part| if p.a > rhs { dst.clone() } else { RULE_REJECTED.clone().to_string() }),
+            's' => return Box::new(move |p: Part| if p.s > rhs { dst.clone() } else { RULE_REJECTED.clone().to_string() }),
             _ => panic!("Bananas"),
         }
     } else {
@@ -83,6 +89,25 @@ impl PartialEq for Workflow {
 
 impl Eq for Workflow {}
 
+const ACCEPTED: &str = "A";
+const REJECTED: &str = "R";
+const RULE_REJECTED: &str = "";
+
+impl Workflow {
+    fn apply(&self, p: Part) -> String {
+        for r in self.rules.iter() {
+            let rr = r(p.clone());
+            match rr.as_str() {
+                RULE_REJECTED => continue,
+                ACCEPTED => return ACCEPTED.to_string(),
+                REJECTED => return REJECTED.to_string(),
+                a => return rr,
+            }
+        }
+        panic!("BANANAS");
+    }
+}
+
 fn parse_workflow(input: &str) -> IResult<&str, Workflow> {
     let (input, name) = preceded(opt(newline), alpha1)(input)?;
     let (input, rules) = delimited(
@@ -100,17 +125,62 @@ fn parse_workflow(input: &str) -> IResult<&str, Workflow> {
         ), 
         tag("}")
     )(input)?;
-    let rules = rules.iter().map(|&(c, d)| as_rule(&c.to_string(), &d.to_string()));
-    Ok((input, Workflow {name: name.to_string(), rules: Vec::new()}))
+    let rules = rules.iter().map(|&(c, d)| as_rule(c.to_string(), d.to_string())).collect::<Vec<Box<Rule>>>();
+    Ok((input, Workflow {name: name.to_string(), rules}))
+}
+
+fn parse_part(input: &str) -> IResult<&str, Part> {
+    let (input, part) = delimited(
+        tag("{"),
+        tuple((
+            preceded(
+                tag("x="),
+                take_until(","),
+            ),
+            preceded(
+                tag(",m="),
+                take_until(","),
+            ),
+            preceded(
+                tag(",a="),
+                take_until(","),
+            ),
+            preceded(
+                tag(",s="),
+                take_until("}"),
+            ),
+        )),
+        tag("}"),
+    )(input)?;
+    Ok((input, Part { 
+        x: part.0.parse().unwrap(), 
+        m: part.1.parse().unwrap(),
+        a: part.2.parse().unwrap(),
+        s: part.3.parse().unwrap()
+    }))
 }
 
 fn parse(input: &String) {
     let workflows_vec = input.split("\n\n").nth(0).unwrap().split("\n").map(|l| parse_workflow(l).unwrap().1);
+    let parts = input.split("\n\n").nth(1).unwrap().trim().split("\n").map(|l| parse_part(l).unwrap().1).collect::<Vec<Part>>();
     let mut workflows: HashMap<String, Workflow> = HashMap::new();
     for workflow in workflows_vec {
         workflows.insert(workflow.name.clone(), workflow);
     }
-    let init_workflow = workflows.get(&"in".to_string()).unwrap();
+
+    let mut t: u32 = 0;
+    for p in parts.iter() {
+        let mut cname = "in".to_string();
+        while cname != ACCEPTED && cname != REJECTED {
+            let c = workflows.get(&cname).unwrap();
+            cname = c.apply(p.clone());
+        }
+        match cname.as_str() {
+            ACCEPTED => t += p.value(),
+            _ => continue,
+        }
+    }
+    println!("{}", t);
 }
 
 impl Solution for Day19 {
